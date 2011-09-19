@@ -1,0 +1,32 @@
+BAM Manager - Bugzilla automated monitor manager
+=============================
+
+BAM Manager is an extension of BAM - Bugzilla automated monitor (https://github.com/bayoteers/Metrics),
+it is a web user interface which is meant to simplify maintaining BAM, especially creating, editing, removing and refreshing 
+bugzilla metrics.
+
+CONFIGURATION
+========================
+
+Preconditions:
+--------------
+0. Configure BAM 
+-> https://github.com/bayoteers/Metrics
+
+Configure BAM Manager:
+----------------------
+1. Download and extract archive to <your bam www location> directory i.e. /var/www/metrics/
+2. Add one line to /etc/sudoers:
+$your_www_user ALL=(ALL) NOPASSWD: $path_to_libcontentaction.pl
+i.e.
+www-data ALL=(ALL) NOPASSWD: /var/www/bugzilla_statistics/manager/lib/libcontentaction.pl
+3. Navigate to http://<BAM_page>/manager in your browser (firefox or google chrome are highly recommended)
+and log in using pre-defined admin account admin:admin
+4. Open Settings tab and configure 'BAM Manager settings' section
+
+========================
+
+MINI HOW TO:
+------------
+
+...
