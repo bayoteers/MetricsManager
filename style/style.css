@@ -1,0 +1,308 @@
+body {
+    font            : normal 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif; 
+    margin          : 0px;
+    padding         : 0px;
+    color           : #000000;
+    text-align      : left;
+    background-color: #eeeeee;
+}
+
+p {
+    padding         : 0px;
+}
+
+a{
+	color			: #68B3E3;
+	text-decoration	: none;
+}
+
+
+a:hover{
+	color			: #30497c;
+}
+
+hr {
+    text-align      : left;
+    margin-left     : 0;
+    height          : 1px;
+    border-width    : 0;
+    color           : #68b3e3;
+    background-color: #68b3e3;
+    width           : 100%;
+}
+
+table{
+	font            : normal 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
+}
+
+td.right{
+	text-align      : right;
+}
+
+td.right150p{
+	text-align      : right;
+	width			: 150px;
+}
+
+table.create{
+	font            : normal 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
+	width			: 865px;
+}
+
+td.left{
+	text-align      : right;
+	width			: 200px;
+}
+
+td.center{
+	text-align      : left;
+}
+
+td.center_create {
+	text-align      : left;
+	width			: 650px;
+}
+
+#content {
+    text-align      : left;
+    vertical-align  : middle;
+    margin          : 0px;
+    padding         : 30px;
+    border          : none;
+    background      : #eeeeee;
+}
+
+.help {
+	width			: 15px;
+	height			: 15px;
+	vertical-align	: top;
+}
+
+.help ul {
+    list-style		: none outside none;
+	background-color: #68B3E3;
+	width			: 15px;
+	height			: 12px;
+    margin			: 0;
+    padding			: 0;
+	cursor			: pointer;
+	margin-left		: -4px;
+	margin-top		: auto;
+	color			: white;
+	text-align		: center;
+	font			: bold 12px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
+	border-top		: 5px solid #68B3E3;
+	border-bottom	: 5px solid #68B3E3;
+	border-radius	: 0px 3px 3px 0px;
+
+}
+.help ul:hover{
+	border-top		: 5px solid #30497c;
+	border-bottom	: 5px solid #30497c;
+	background-color: #30497c;
+}
+
+.help li {
+    display			: none;
+	background		: none repeat scroll 0 0 #EEEEEE;
+    border			: 1px solid #30497c;
+	border-radius	: 3px 3px 3px 3px;
+    color			: #30497c;
+    font			: 11px "Arial CE","Helvetica CE",Arial,Helvetica,sans-serif;
+    margin-left		: 10px;
+	margin-top		: -5px;
+    padding			: 0.6em 5px;
+    position		: absolute;
+    text-align		: left;
+    text-decoration	: none;
+	
+}
+
+.help ul:hover li {
+    display			: inline;
+}
+
+#log_details {
+	position		: absolute;
+	right			: 30px;
+}
+
+#container {
+    border			: 1px solid #68b3e3;
+    border-top		: 1px solid #eeeeee;
+    overflow		: auto;
+    clear			: both;
+    float			: left;
+    width			: 100%;
+    background		: #eeeeee;
+}
+
+#container_body{
+	position		:relative;
+	padding			:30px 50px 30px 50px;
+}
+
+#interior {
+	border			: 1px solid #68b3e3;
+	margin			: auto;
+	padding			: 10px;
+	overflow		: auto;
+}
+
+#message_fieldset {
+	border			: 1px solid #68b3e3;
+	width			: 700px;
+	margin			: auto;
+	padding			: 20px;
+	overflow		: auto;
+}
+
+.syslog {
+	font            : normal 11px "Courier New";
+	padding			: 0 px;
+	overflow		: hidden;
+}
+
+div.scroll {
+	height: 250px;
+	width: 99%;
+	overflow: auto;
+	overflow-y: scroll;
+	border: 1px solid #666;
+	background-color: #fff;
+	padding: 8px;
+	font            : normal 11px "Courier new";
+	margin			: auto;
+}
+
+#login_form {
+	border			: 1px solid #68b3e3;
+	padding			: 10px;
+	width			: 350px;
+	height			: 220px;
+	margin			: 40px auto;	
+}
+
+#new{
+	position		: absolute;
+}
+
+#update{
+	position		: absolute;
+}
+
+#existing{
+	position		: absolute;
+}
+#products{
+	position		: absolute;
+}
+#params{
+	position		: absolute;
+}
+#refresh{
+	position		: absolute;
+}
+#settings{
+	position		: absolute;
+}
+
+#spinner_bg{
+	width			: 600px;
+	height			: 400px;
+	margin			: auto;
+	display			: none;
+}
+
+/*Image*/
+#spinner{
+	position		: relative;
+	display			: none;
+	margin			: auto;
+	top				: 175px;
+}
+#progress_info{
+	position		: relative;
+	color			: #68B3E3;
+	margin			: auto;
+	top				: 190px;
+	left			: 260px;
+	
+}
+
+.visibility {
+	visibility		: hidden;
+}
+
+.main_menu {
+    margin			: 0;
+    padding			: 0;
+    float			: left;
+    list-style		: none;
+    border-bottom	: 1px solid #68b3e3;
+    border-left		: 1px solid #68b3e3;
+    width			: 100%;
+}
+
+.main_menu li {
+    float			: left;
+    margin			: 0;
+    padding			: 0;
+    border			: 1px solid #68b3e3;
+    border-left		: none;
+    margin-bottom	: -1px;
+    overflow		: hidden;
+    position		: relative;
+    background		: #cccccc;
+}
+
+.main_menu li a {
+    color           : #30497c;
+    font            : bold 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
+    text-decoration : none;
+    display         : block;
+    padding         : 0.6em 1em;
+    margin          : 0;
+    border          : 1px solid #eeeeee; /*--Gives the bevel look with a 1px white border inside the list item--*/
+    outline         : none;
+}
+
+.main_menu li a:hover {
+    background      : #dddddd;
+    color           : #dd0000;
+    text-decoration : none;
+}
+.main_menu li.active, .details_menu li.active a:hover  { /*--Makes sure that the active tab does not listen to the hover properties--*/
+    background      : #eeeeee;
+    text-decoration : none;
+    border-bottom   : 1px solid #eeeeee; /*--Makes the active tab look like it's connected with its content--*/
+}
+
+legend {
+    font-weight     : bold;
+}
+
+.row {
+	text-align      : right;
+	margin			: 0px;
+}
+
+.button {
+	text-align      : center;
+	margin: 0px;
+}
+h2 {
+	margin			: 10px 5px 2px 5px;
+}
+
+a.notification-link:link, a.notification-link:visited {
+	text-decoration	: underline;
+	color			: green;
+	font-size		: 14px;
+	font-weight		: bold;
+		
+	}
+	
+a.notification-link:hover {
+	color: red;
+}
