@@ -348,7 +348,6 @@ function submitFields() {
 		document.edit_statistics.submit();
 	}
 }
-
 function handleWantsList(wants_list){
 	if (wants_list){
 		document.getElementById('list_false').style.display = 'none';
