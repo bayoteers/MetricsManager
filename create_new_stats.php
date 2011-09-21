@@ -241,7 +241,7 @@ else {
 					<table class="create" border="0"><br>
 						<tr>
 							<td class="left">*Name of configuration file:</td>
-							<td class="center_create"><input style="width:650px; height:22px;" type="text" name="path" value="" /></td>
+							<td class="center_create"><input class="input_text" type="text" name="path" value="" /></td>
 						<td class="help">
 								<ul>?
 									<li>
@@ -252,7 +252,7 @@ else {
 						</tr>
 						<tr>
 							<td class="left">*Bugzilla search:</td>
-							<td class="center_create"><input style="width:650px; height:22px;"  type="text" name="bz_search"" /></td>				
+							<td class="center_create"><input class="input_text"  type="text" name="bz_search"" /></td>				
 							<td class="help">
 								<ul>?
 									<li>
@@ -263,7 +263,7 @@ else {
 						</tr>
 						<tr>
 							<td class="left">*Name of statistic:</td>
-							<td class="center_create"><input style="width:650px; height:22px;"  type="text" name="name_of_stats"/></td>
+							<td class="center_create"><input class="input_text"  type="text" name="name_of_stats"/></td>
 							<td class="help">
 								<ul>?
 									<li>
@@ -277,7 +277,7 @@ else {
 							<td class="center_create">
 	';
 	echo'
-									<select style="width:650px; height:22px;"  name="existing_list" onchange="disLink();">
+									<select class="input_text" name="existing_list" onchange="disLink();">
 										<option name="existing_list"></option>';
 										$file_list = glob($path_to_products_directory . '*.conf');
 										foreach ($file_list as $file){
@@ -304,11 +304,11 @@ else {
 				<hr>
 					<table class="create"><br>
 						<tr>
-							<td rowspan="2" style="width:50px" align="right"><input type="checkbox" name="subset_check" value="custom" onChange="enableField()"></td>
-							<td style="width:150px" align="right">Subset of:</td>
+							<td rowspan="2" style="width:75px" align="right"><input type="checkbox" name="subset_check" value="custom" onChange="enableField()"></td>
+							<td style="width:200px" align="right">Subset of:</td>
 	';		
 	echo'
-							<td><select style="width:650px; height:22px" name="subset_list" disabled>
+							<td><select class="input_text" name="subset_list" disabled>
 								<option name="subset_list" id="subset_none" value=""></option>
 	';
 								$searchString = 'SUBSET_OF';
@@ -344,7 +344,7 @@ else {
 								Retrieve history from date:
 							</td>
 							<td>
-								<input style="width:650px; height:22px" disabled type="text" name="subset_from_date" placeholder="YYYY-MM-DD"/>
+								<input class="input_text" disabled type="text" name="subset_from_date" placeholder="YYYY-MM-DD"/>
 							</td>
 							<td class="help">
 								<ul>?

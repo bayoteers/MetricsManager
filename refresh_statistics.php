@@ -23,11 +23,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_selected_statis
 		for($i=0; $i < $number_of_selected_statistics_to_refresh; $i++) {
 			//Remove present-day raw_data files for selected statistics
 			system("sudo lib/libcontentaction.pl --refresh $list_of_statistics_to_refresh[$i]"); 
-			//Fetch data as BAM user
+			
+			//$command = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --fetch $fetch_statistics_from_bugzilla_file $list_of_statistics_to_refresh[$i]";
+			
 			exec("sudo lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $list_of_statistics_to_refresh[$i]", &$output, &$return_var);
 			if ($return_var == 9) {
-				$body .= 'Updating' . $list_of_statistics_to_refresh[$i];
-				$body .= '<br>Success!<br><br>';
+				$body .= '<p>Updating' . $list_of_statistics_to_refresh[$i];
+				$body .= '<br>Success! Selected statistics has been updated<br>';
+				$path = searchString($common_parameters_file, "STATS_URL_BASE") . '?s=' . searchString($list_of_statistics_to_refresh[$i], "STATISTICS") . '&p=all';
+				$body .= '<a href = "' . $path . '" target="_blank">' . searchString($list_of_statistics_to_refresh[$i], "STATISTICS") . '</a></p>';
 			}
 			
 			else {
@@ -83,7 +87,9 @@ else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_all'])) {
 	// check whether refreshing was successfull
 	if ($return_var == 9) {
 		system("sudo lib/libcontentaction.pl --end $login 'Refresh all statistics'");
-		displayMessageFieldset('Success!', 'All statistics have been succesfully refreshed.', '?tab=refresh_statistics');
+		$path = searchString($common_parameters_file, "STATS_URL_BASE");
+		$body = 'All statistics have been succesfully refreshed. <br> <a href="' . $path . '?s="target="_blank">' . $path . '</a>';
+		displayMessageFieldset('Success!', $body, '?tab=refresh_statistics');
 	}
 	
 	else {

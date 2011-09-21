@@ -60,41 +60,69 @@ else {
 		<form name="BAM_settings" action="index.php?tab=settings" method="POST">
 		<fieldset id="interior">
 		<legend>BAM Manager settings</legend>
-		<table style="width: 80%;">
+		<table class="create">
 			<tr>
-				<td class="right" style="width: 240px;"><p>Location of \'Common parameters\' file:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="common_parameters_file" value=' . $common_parameters_file . '></td>
-				<td></td>
+				<td class="left"><p>Location of \'Common parameters\' file:</p></td>
+				<td class="center_create"><input disabled type="text" class="input_text" name="common_parameters_file" value=' . $common_parameters_file . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to common_parameters.conf file i.e. /home/metrics/common_parameters.conf</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Location of \'crontab\' file:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="crontab_file" value=' . $crontab_file . '></td>
-				<td></td>
+				<td class="left"><p>Location of \'crontab\' file (BAM Schedule):</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="crontab_file" value=' . $crontab_file . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to crontab file i.e. /etc/cron.d/fetch_statistics</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Location of \'fetch_statistics_from_bugzilla.pl\' file:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="fetch_statistics_from_bugzilla_file" value=' . $fetch_statistics_from_bugzilla_file . '></td>
-				<td></td>
+				<td class="left"><p>Location of \'fetch_statistics_from_bugzilla.pl\' file:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="fetch_statistics_from_bugzilla_file" value=' . $fetch_statistics_from_bugzilla_file . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to fetch_statistics_from_bugzilla.pl i.e. /home/metrics/bin/fetch_statistics_from_bugzilla.pl</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Location of \'fetch_statistics.sh\' file:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="fetch_statistics_file" value=' . $fetch_statistics_file . '></td>
-				<td></td>
+				<td class="left"><p>Location of \'fetch_statistics.sh\' file:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="fetch_statistics_file" value=' . $fetch_statistics_file . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to shell script run by cron, contains list of statistics to fetch.</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Path to \'statistics\' directory:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="path_to_statistics_directory" value=' . $path_to_statistics_directory . '></td>
-				<td></td>
+				<td class="left"><p>Path to \'statistics\' directory:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="path_to_statistics_directory" value=' . $path_to_statistics_directory . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to directory where you want to store statistics configuration files</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Path to \'products\' directory:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="path_to_products_directory" value=' . $path_to_products_directory . '></td>
-				<td></td>
+				<td class="left"><p>Path to \'products\' directory:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="path_to_products_directory" value=' . $path_to_products_directory . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to directory where you want to store lists of products files (should be different than statistics directory)</li>
+					</ul>
+				</td>
 			</tr>
 			<tr>
-				<td class="right"><p>Name of statistics user:</p></td>
-				<td class="center"><input disabled type="text" size="80" name="statistics_user" value=' . $statistics_user . '></td>
-				<td></td>
+				<td class="left"><p>Name of statistics user:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="statistics_user" value=' . $statistics_user . '></td>
+				<td class="help">
+					<ul>?
+						<li>Name of user who runs statistics. Defined i.e. in crontab file.</li>
+					</ul>
+				</td>
 			</tr>
 		</table>
 		</fieldset>

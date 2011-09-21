@@ -46,12 +46,12 @@ td.right150p{
 
 table.create{
 	font            : normal 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
-	width			: 865px;
+	width			: 940px;
 }
 
 td.left{
 	text-align      : right;
-	width			: 200px;
+	width			: 275px;
 }
 
 td.center{
@@ -61,6 +61,11 @@ td.center{
 td.center_create {
 	text-align      : left;
 	width			: 650px;
+}
+
+.input_text {
+	width			:650px;
+	height			:22px;
 }
 
 #content {
