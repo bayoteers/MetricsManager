@@ -84,8 +84,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 			//Decide when statistic runs.
 			if($lunch_method == 'run_now' && !$subset_list){
 				//Lunch statistic now
-				$command = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --fetch /var/www/bugzilla_statistics/manager/lib/fetch_statistics_from_bugzilla.pl $path_of_conf_file";
-				system("sudo su - btests-www -c '$command'");
+				$command = "lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $path_of_conf_file";
+				exec("sudo $command", &$output, &$return_var);
+				/* 
+				// check whether fetching was successful
+				if ($return_var == 9) {
+					echo 'OK';
+				}
+			
+				else {
+					echo 'ERROR';
+				}
+				*/
 	echo'
 					<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
 						<legend>
@@ -129,8 +139,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 				}
 				else{
 					//Lunch subset of
-					$command_subset = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --subset /home/btests-www/bin/create_subset.pl $path_of_conf_file $subset_from_date";
-					system("sudo su - btests-www -c '$command_subset'");
+					$command_subset = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --subset /home/btests-www/bin/create_subset.pl $path_of_conf_file $subset_from_date $statistics_user";
+					exec("sudo $command_subset", &$output, &$return_var);
+					/* 
+					// check whether fetching was successful
+					if ($return_var == 9) {
+						echo 'OK';
+					}
+				
+					else {
+						echo 'ERROR';
+					}
+					*/
 	echo'
 						<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
 							<legend>

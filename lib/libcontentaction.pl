@@ -126,7 +126,7 @@ elsif ($ARGV[0] eq "--refresh-all") {
 			info("Present-day data successfully removed.");
 		}
 		# Fetch data for ALL statistics
-		$response = execute_command("su - $FETCH_STATISTICS_USER -c '$FETCH_STATISTICS_FILE'");
+		$response = execute_command("su - $FETCH_STATISTICS_USER -c '$FETCH_STATISTICS_FILE $CONFIG_FILE'");
 		if ($response ne "") {
 			info("ERROR: $response");
 		}
@@ -144,18 +144,20 @@ elsif ($ARGV[0] eq "--refresh-all") {
 
 elsif ($ARGV[0] eq "--fetch") {
 	info("METHOD: --fetch");
-	if ($#ARGV != 2) {
+	if ($#ARGV != 3) {
 		print "--fetch ERROR: too few or too many argument(s)\n$help";
 		exit -1;
 	}
 	
 	else {
-		$FETCH_PATH=$ARGV[1];
-		info("$ARGV[1]");
-		$FILE_PATH=$ARGV[2];
-		info("$ARGV[2]");
-		$ret = execute_command("$FETCH_PATH $FILE_PATH");
-		
+		$FETCH_STATISTICS_USER=$ARGV[1];
+		info("FETCH_STATISTICS_USER: $ARGV[1]");
+		$FETCH_STATISTICS_FROM_BUGZILLA_FILE=$ARGV[2];
+		info("FETCH_STATISTICS_FROM_BUGZILLA_FILE: $ARGV[2]");
+		$STATISTICS_CONFIG_FILE=$ARGV[3];
+		info("STATISTICS_CONFIG_FILE: $ARGV[3]");
+		# Fetch data as BAM user
+		$ret = execute_command("su - $FETCH_STATISTICS_USER -c '$FETCH_STATISTICS_FROM_BUGZILLA_FILE $STATISTICS_CONFIG_FILE'");
 		if ($ret ne "") {
 			info("ERROR: BAM could not fetch data: $ret");
 			exit -1;
@@ -167,19 +169,21 @@ elsif ($ARGV[0] eq "--fetch") {
 
 elsif ($ARGV[0] eq "--subset") {
 	info("METHOD: --subset");
-	if ($#ARGV != 3) {
+	if ($#ARGV != 4) {
 		print "METHOD: --subset ERROR: too few or too many argument(s)\n$help";
 		exit -1;
 	}
 	
 	else {
 		$FETCH_PATH=$ARGV[1];
-		info("$ARGV[1]");
+		info("FETCH_PATH: $ARGV[1]");
 		$FILE_PATH=$ARGV[2];
-		info("$ARGV[2]");
+		info("FILE_PATH: $ARGV[2]");
 		$DATE=$ARGV[3];
-		info("$ARGV[3]");
-		$ret = execute_command("$FETCH_PATH $FILE_PATH $DATE");
+		info("DATE: $ARGV[3]");
+		$FETCH_STATISTICS_USER=$ARGV[4];
+		info("FETCH_STATISTICS_USER: $ARGV[4]");
+		$ret = execute_command("su - $FETCH_STATISTICS_USER -c '$FETCH_PATH $FILE_PATH $DATE'");
 		
 		if ($ret ne "") {
 			info("ERROR: BAM could not fetch data: $ret");

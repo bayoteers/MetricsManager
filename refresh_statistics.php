@@ -23,10 +23,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_selected_statis
 		for($i=0; $i < $number_of_selected_statistics_to_refresh; $i++) {
 			//Remove present-day raw_data files for selected statistics
 			system("sudo lib/libcontentaction.pl --refresh $list_of_statistics_to_refresh[$i]"); 
-			
-			$command = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --fetch $fetch_statistics_from_bugzilla_file $list_of_statistics_to_refresh[$i]";
-			
-			exec("sudo su - $statistics_user -c '$command'", &$output, &$return_var);
+			//Fetch data as BAM user
+			exec("sudo lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $list_of_statistics_to_refresh[$i]", &$output, &$return_var);
 			if ($return_var == 9) {
 				$body .= 'Updating' . $list_of_statistics_to_refresh[$i];
 				$body .= '<br>Success!<br><br>';
@@ -80,7 +78,7 @@ else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_all'])) {
 	//Remove present-day raw_data files for ALL statistics
 	// and then
 	//Fetch data for ALL statistics
-	system("sudo lib/libcontentaction.pl --refresh-all $common_parameters_file $statistics_user $fetch_statistics_file");
+	exec("sudo lib/libcontentaction.pl --refresh-all $common_parameters_file $statistics_user $fetch_statistics_file", &$output, &$return_var);
 	
 	// check whether refreshing was successfull
 	if ($return_var == 9) {

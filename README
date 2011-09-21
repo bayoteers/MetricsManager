@@ -26,7 +26,7 @@ rest of files: 755, owner: <your_user>
 $your_www_user ALL=(ALL) NOPASSWD: $path_to_libcontentaction.pl
 i.e.
 www-data ALL=(ALL) NOPASSWD: /var/www/bugzilla_statistics/manager/lib/libcontentaction.pl
-4. Navigate to http://<BAM_page>/manager in your browser (firefox or google chrome are highly recommended)
+4. Navigate to http://BAM_page/manager/ in your browser (firefox or google chrome are highly recommended)
 and log in using pre-defined admin account admin:admin
 5. Open Settings tab and configure 'BAM Manager settings' section
 
