@@ -6,24 +6,27 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	//New products variables (create_list_of_products.php file)
 	$list_name = $_POST['list_name'];
 	$add_products = $_POST['add_products'];
-	// divide text into lines -> only one line at once can be saved to file using console
-	$products_array = explode("\n",$add_products);
 	//Common variables
-	$path = $_POST['path'];
-	$path_of_conf_file = $path_to_statistics_directory . $path;
+	$path = trim($_POST['path']);
+	$path_of_conf_file = $path_to_statistics_directory.$path;
 	$file_check = file_exists($path_of_conf_file);
 	$common_params = $common_parameters_file;
-	$bz_search = $_POST['bz_search'];
-	$name_of_stats = $_POST['name_of_stats'];
+	$bz_search = trim($_POST['bz_search']);
+	$name_of_stats = trim($_POST['name_of_stats']);
 	$existing_list = $_POST['existing_list'];
-	$subset_from_date = $_POST['subset_from_date'];
+	$subset_from_date = trim($_POST['subset_from_date']);
 	$classification = $_POST['classification'];
 	$lunch_method = $_POST['lunch_method'];
-	$subset_list = $_POST['subset_list'];
-
+	$subset_path = $_POST['subset_path'];
+	
+	//Searching BZ search parameter in subset of file.
+	if($subset_path){
+		$subset_bz_search =  searchString($subset_path, "BUGZILLA_URL_COMMON_PARAMS");
+		echo $subset_bz_search;
+	}
 	//Searching name of statistic in subset of file.
-	if($subset_list){
-		$subset_statistic_name = searchString($subset_list, "STATISTICS");
+	if($subset_path){
+		$subset_statistic_name = searchString($subset_path, "STATISTICS");
 	}
 	
 	//Defining form array
@@ -37,15 +40,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 		}
 		if(!$products_file_check){
 			$k = 0;
-			if($common_params != ''){
+			if($common_params){
 				$field_arr[$k] = "COMMON_PARAMS_FILE = ".$common_params;
 				$k++;
 			}
-			if($bz_search != ''){
+			if($bz_search){
 				$field_arr[$k] = "BUGZILLA_URL_COMMON_PARAMS = ".$bz_search;
 				$k++;
 			}
-			if($name_of_stats != ''){
+			elseif($subset_path){
+				$field_arr[$k] = "BUGZILLA_URL_COMMON_PARAMS = ".$subset_bz_search;
+				$k++;
+			}
+			if($name_of_stats){
 				$field_arr[$k] = "STATISTICS = ".$name_of_stats;
 				$k++;
 			}
@@ -55,18 +62,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 			}
 			else{
 				//Creating list of products if chosen
-				$list_temp_file = 'tmp/' . rand();
+				$list_temp_file = 'tmp/'.rand();
 				saveToFile($list_temp_file, $add_products);
 				system("sudo lib/libcontentaction.pl --move $list_temp_file $list_path");
 				
 				$field_arr[$k] = "PRODUCTS_CONFIG_FILE = ".$list_path;
 				$k++;
 			}
-			if($subset_list != ''){
+			if($subset_path){
 				$field_arr[$k] = "SUBSET_OF = ".$subset_statistic_name;
 				$k++;
 			}
-			if($classification != ''){
+			if($classification){
 				$field_arr[$k] = "INCOMPLETE_CLASSIFICATION = ".$classification;
 				$k++;
 			}
@@ -82,7 +89,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 			system("sudo lib/libcontentaction.pl --save $fetch_statistics_file $fetch");
 					
 			//Decide when statistic runs.
-			if($lunch_method == 'run_now' && !$subset_list){
+			if($lunch_method == 'run_now' && !$subset_path){
 				//Lunch statistic now
 				$command = "lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $path_of_conf_file";
 				exec("sudo $command", &$output, &$return_var);
@@ -102,8 +109,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 							Statistic has been successfully created
 						</legend> 
 							Statistic has been created: <a href="http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'" target="_blank">
-								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'</a>
-							Check <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
+								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'.</a>
+							&nbspCheck <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
 							<br><br>
 							<a href="?tab=create_new_stats">Back to Create Form</a>
 					</fieldset>
@@ -126,31 +133,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 					<br><br>
 	';
 			}
-			elseif($lunch_method == 'run_now' && $subset_list){
-				if (!$subset_from_date){
-					$error = 'Please fill in "Retrieve history from date" field.<br>';
-	echo'
-					<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
-						<legend>
-							Error
-						</legend>'.$error.'
-					</fieldset>
-	';
+			elseif($lunch_method == 'run_now' && $subset_path){
+				//Lunch subset of
+				$command_subset = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --subset /home/btests-www/bin/create_subset.pl $path_of_conf_file $subset_from_date $statistics_user";
+				exec("sudo $command_subset", &$output, &$return_var);
+				/* 
+				// check whether fetching was successful
+				if ($return_var == 9) {
+					echo 'OK';
+					}
+				else {
+					echo 'ERROR';
 				}
-				else{
-					//Lunch subset of
-					$command_subset = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --subset /home/btests-www/bin/create_subset.pl $path_of_conf_file $subset_from_date $statistics_user";
-					exec("sudo $command_subset", &$output, &$return_var);
-					/* 
-					// check whether fetching was successful
-					if ($return_var == 9) {
-						echo 'OK';
-					}
-				
-					else {
-						echo 'ERROR';
-					}
-					*/
+				*/
 	echo'
 						<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
 							<legend>
@@ -158,9 +153,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 							</legend>
 							Statistic has been created: 
 							<a href="http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'" target="_blank">
-								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'
+								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'.
 							</a>
-							Check <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
+							&nbspCheck <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
 							<br><br>
 							<a href="?tab=create_new_stats">Back to Create Form</a>
 						</fieldset>
@@ -176,7 +171,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	echo'
 					<p>' . displayArray($syslog) . '</p>
 	';
-				}
 			}
 			elseif($lunch_method == 'run_auto'){
 	echo'
@@ -230,8 +224,11 @@ else {
 		<!--			
 					<table width="100%">
 						<tr>
-							<td class="left">Common Parameters File:</td>
-							<td><input type="radio" checked name="common_params" value="/usr/local/etc/bugzilla_statistics/common_parameters.conf" onChange="javascript:document.create_form.custom_params.disabled=true"> Default (/usr/local/etc/bugzilla_statistics/common_parameters.conf)<br>
+							<td class="left">
+								Common Parameters File:
+							</td>
+							<td>
+								<input type="radio" checked name="common_params" value="/usr/local/etc/bugzilla_statistics/common_parameters.conf" onChange="javascript:document.create_form.custom_params.disabled=true"> Default (/usr/local/etc/bugzilla_statistics/common_parameters.conf)<br>
 								<input type="radio" name="common_params" value="" onChange="javascript:document.create_form.custom_params.disabled=false"> Custom <input disabled size="50" type="text" name="custom_params" value="" placeholder="DO NOT USE - under construction"/><br>
 							</td>
 						</tr>
@@ -240,9 +237,13 @@ else {
 		-->
 					<table class="create" border="0"><br>
 						<tr>
-							<td class="left">*Name of configuration file:</td>
-							<td class="center_create"><input class="input_text" type="text" name="path" value="" /></td>
-						<td class="help">
+							<td class="left">
+								*Name of configuration file:
+							</td>
+							<td class="center_create">
+								<input class="input_text" type="text" name="path" value="" />
+							</td>
+							<td class="help">
 								<ul>?
 									<li>
 										Please specify name of configuration file ended with ".conf" <br>To avoid problems please name file similar as name of statistic e.g. harmattan_PR12_-_OS_-_adaptation.conf
@@ -251,8 +252,13 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td class="left">*Bugzilla search:</td>
-							<td class="center_create"><input class="input_text"  type="text" name="bz_search"" /></td>				
+							<td class="left">
+								*Bugzilla search:
+							</td>
+							<td class="center_create">
+								<input class="input_text"  type="text" name="bz_search" />
+								<input class="input_text"  type="hidden" name="bz_search_hidden" />
+							</td>				
 							<td class="help">
 								<ul>?
 									<li>
@@ -262,8 +268,12 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td class="left">*Name of statistic:</td>
-							<td class="center_create"><input class="input_text"  type="text" name="name_of_stats"/></td>
+							<td class="left">
+								*Name of statistic:
+							</td>
+							<td class="center_create">
+								<input class="input_text"  type="text" name="name_of_stats"/>
+							</td>
 							<td class="help">
 								<ul>?
 									<li>
@@ -273,7 +283,9 @@ else {
 							</td>
 						</tr>
 						<tr>
-							<td class="left">*List of products:</td>
+							<td class="left">
+								*List of products:
+							</td>
 							<td class="center_create">
 	';
 	echo'
@@ -304,30 +316,36 @@ else {
 				<hr>
 					<table class="create"><br>
 						<tr>
-							<td rowspan="2" style="width:75px" align="right"><input type="checkbox" name="subset_check" value="custom" onChange="enableField()"></td>
-							<td style="width:200px" align="right">Subset of:</td>
+							<td rowspan="2" style="width:75px" align="right">
+								<input type="checkbox" name="subset_check" value="custom" onChange="enableField()">
+							</td>
+							<td style="width:200px" align="right">
+								Subset of:
+							</td>
 	';		
 	echo'
-							<td><select class="input_text" name="subset_list" disabled>
-								<option name="subset_list" id="subset_none" value=""></option>
+							<td>
+								<select disabled class="input_text" name="subset_path">
+									<option name="subset_path" id="subset_none" value=""></option>
 	';
-								$searchString = 'SUBSET_OF';
-								function searchTxt($file){
-									global $searchString;
-									if(strpos(file_get_contents($file), $searchString) == false){
-										echo '<option name="subset_list" value="' . $file . '">' . $file . '</option>
-										';
+									$searchString = 'SUBSET_OF';
+									function searchTxt($file){
+										global $searchString;
+										if(strpos(file_get_contents($file), $searchString) == false){
+	echo'							
+									<option name="subset_path" value="' . $file . '">' . $file . '</option>
+	';
+										}
 									}
-								}
-								$dir = opendir($path_to_statistics_directory);
-								while($f = readdir($dir))
-								{
-								  if(!is_dir($path_to_statistics_directory.$f))
-								  {
-									 searchTxt($path_to_statistics_directory.$f);
-								   }
-								}
-								closedir($dir);
+									$dir = opendir($path_to_statistics_directory);
+									while($f = readdir($dir))
+									{
+									  if(!is_dir($path_to_statistics_directory.$f))
+									  {
+										 searchTxt($path_to_statistics_directory.$f);
+									   }
+									}
+									closedir($dir);
 	echo'
 								</select>
 							</td>
@@ -358,17 +376,29 @@ else {
 				<hr>
 					<table class="create"><br>
 						<tr>
-							<td class="left">Incomplete classification:<br><a href="#" class="classification"  onClick="uncheck()" style="margin-left:20px;">>Uncheck all<</a></td>
-							<td><input type="radio" name="classification" value="true"> True<br>
-							<input type="radio" name="classification" value="false"> False</td>
+							<td class="left">
+								Incomplete classification:
+								<br>
+								<a href="#" class="classification"  onClick="uncheck()" style="margin-left:20px;">>Uncheck all<</a>
+							</td>
+							<td>
+								<input type="radio" name="classification" value="true"> True
+								<br>
+								<input type="radio" name="classification" value="false"> False
+							</td>
 						</tr>
 					</table><br>
 				<hr>
 					<table class="create"><br>
 						<tr>
-							<td class="left">*Define run method:</td>
-							<td><input type="radio" id="run_now" name="lunch_method" value="run_now"> Run statistics now<br>
-							<input type="radio" id="run_auto" name="lunch_method" value="run_auto"> Wait for automatic run (time of automatic run defined in settings)</td>
+							<td class="left">
+								*Define run method:
+							</td>
+							<td>
+								<input type="radio" id="run_now" name="lunch_method" value="run_now"> Run statistics now
+								<br>
+								<input type="radio" id="run_auto" name="lunch_method" value="run_auto"> Wait for automatic run (time of automatic run defined in settings)
+							</td>
 						</tr>
 					</table><br>
 		</fieldset>
@@ -390,17 +420,24 @@ else {
 	
 function enableField(){
 	if(document.create_form.subset_check.checked){
-		document.create_form.subset_list.disabled = false;
+		document.create_form.subset_path.disabled = false;
 		document.create_form.subset_from_date.disabled = false;
 		document.getElementById('run_now').checked = true;
 		document.getElementById('run_auto').disabled = true;
+		document.create_form.bz_search_hidden.value = document.create_form.bz_search.value;
+		document.create_form.bz_search.value = "";
+		document.create_form.bz_search.placeholder = "Bugzilla search parameter will be taken from subset configuration file";
+		document.create_form.bz_search.disabled = true;
 	}
 	else{
-		document.create_form.subset_list.disabled = true;
+		document.create_form.subset_path.disabled = true;
 		document.getElementById("subset_none").value = "";
 		document.create_form.subset_from_date.disabled = true;
 		document.getElementById('run_now').checked = false;
 		document.getElementById('run_auto').disabled = false;
+		document.create_form.bz_search.value = document.create_form.bz_search_hidden.value
+		document.create_form.bz_search.placeholder = "";
+		document.create_form.bz_search.disabled = false;
 	}
 }
 function uncheck(){
@@ -417,31 +454,37 @@ function disLink(){
 	}
 }
 function createCheckMandatoryFields(){
-	var emptyFields = document.create_form.bz_search.value 
+	var emptyFields = document.create_form.bz_search.value || document.create_form.subset_path.value
 		&& document.create_form.name_of_stats.value 
 		&& (document.create_form.existing_list.value || document.create_form.list_name.value) 
 		&& document.create_form.path.value 
 		&& (document.getElementById('run_now').checked || document.getElementById('run_auto').checked);
 	
 	var alertString = "";
+	
+	
 		
 	if (!emptyFields){
 		if (!document.create_form.path.value){
 			alertString += "Field: \"Name and path of configuration file\" is mandatory" + '\n';
 		}
-		if (!document.create_form.bz_search.value){
+		if (!document.create_form.bz_search.value && !document.create_form.subset_path.value){
 			alertString += "Field: \"Bugzilla search\" is mandatory" + '\n';
 		}
 		if (!document.create_form.name_of_stats.value){
 			alertString += "Field: \"Name of statistics\" is mandatory" + '\n';
 		}
-		if (!(document.create_form.existing_list.value || document.create_form.list_name.value) ){
+		if (!(document.create_form.existing_list.value || document.create_form.list_name.value)){
 			alertString += "Please specify \"List of products\" file or create new list of products" + '\n';
 		}
 		if (!(document.getElementById('run_now').checked || document.getElementById('run_auto').checked)){
 			alertString += "Please \"Define run method\"" + '\n';
 		}
 		alert (alertString);
+	}
+	else if(document.create_form.subset_path.value && !document.create_form.subset_from_date.value){
+		alert("Please define \"Retrieve history from date\" field.");
+		document.create_form.subset_from_date.focus();
 	}
 	else{
 		document.create_form.submit();
