@@ -1,4 +1,18 @@
 <?php
+
+/*
+#===================================================================================
+# BAM Manager (Bugzilla Automated Metrics Manager): index.php
+#
+# Copyright 2011, Comarch SA
+# Maintainers: 	Krystian Jedrzejowski <krystian.jedrzejowski@comarch.com>,
+# 				Kamil Marek <kamil.marek@comarch.com>
+# Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+#
+# Date: Thu Jul 13 11:56:00 EET 2011
+#===================================================================================
+*/
+
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	
 	system("sudo lib/libcontentaction.pl --start $login 'Create statistic'");
@@ -326,7 +340,7 @@ else {
 	echo'
 							<td>
 								<select disabled class="input_text" name="subset_path">
-									<option name="subset_path" id="subset_none" value=""></option>
+									<option name="subset_path" value=""></option>
 	';
 									$searchString = 'SUBSET_OF';
 									function searchTxt($file){
@@ -348,6 +362,7 @@ else {
 									closedir($dir);
 	echo'
 								</select>
+								<input class="input_text"  type="hidden" name="subset_path_hidden" />
 							</td>
 							<td class="help">
 								<ul>?
@@ -363,6 +378,7 @@ else {
 							</td>
 							<td>
 								<input class="input_text" disabled type="text" name="subset_from_date" placeholder="YYYY-MM-DD"/>
+								<input class="input_text"  type="hidden" name="subset_from_date_hidden" />
 							</td>
 							<td class="help">
 								<ul>?
@@ -421,7 +437,9 @@ else {
 function enableField(){
 	if(document.create_form.subset_check.checked){
 		document.create_form.subset_path.disabled = false;
+		document.create_form.subset_path.value = document.create_form.subset_path_hidden.value;
 		document.create_form.subset_from_date.disabled = false;
+		document.create_form.subset_from_date.value = document.create_form.subset_from_date_hidden.value;
 		document.getElementById('run_now').checked = true;
 		document.getElementById('run_auto').disabled = true;
 		document.create_form.bz_search_hidden.value = document.create_form.bz_search.value;
@@ -430,12 +448,15 @@ function enableField(){
 		document.create_form.bz_search.disabled = true;
 	}
 	else{
+		document.create_form.subset_path_hidden.value = document.create_form.subset_path.value;
+		document.create_form.subset_path.value = "";
 		document.create_form.subset_path.disabled = true;
-		document.getElementById("subset_none").value = "";
+		document.create_form.subset_from_date_hidden.value = document.create_form.subset_from_date.value;
+		document.create_form.subset_from_date.value = "";
 		document.create_form.subset_from_date.disabled = true;
 		document.getElementById('run_now').checked = false;
 		document.getElementById('run_auto').disabled = false;
-		document.create_form.bz_search.value = document.create_form.bz_search_hidden.value
+		document.create_form.bz_search.value = document.create_form.bz_search_hidden.value;
 		document.create_form.bz_search.placeholder = "";
 		document.create_form.bz_search.disabled = false;
 	}
@@ -454,37 +475,77 @@ function disLink(){
 	}
 }
 function createCheckMandatoryFields(){
-	var emptyFields = document.create_form.bz_search.value || document.create_form.subset_path.value
+	var nameFormat = /^\s*\S+\s*$/;
+	var fileFormat = /^\s*\S+\.conf\s*$/;
+	var dateFormat = /^20\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$/;
+	
+	var emptyFields = (document.create_form.bz_search.value || document.create_form.subset_path.value)
 		&& document.create_form.name_of_stats.value 
 		&& (document.create_form.existing_list.value || document.create_form.list_name.value) 
 		&& document.create_form.path.value 
 		&& (document.getElementById('run_now').checked || document.getElementById('run_auto').checked);
 	
+	var wrongFormatMain = fileFormat.test(document.create_form.path.value)
+		&& nameFormat.test(document.create_form.name_of_stats.value);
+	
+	var wrongFormatSubset = document.create_form.subset_path.value
+		&& !dateFormat.test(document.create_form.subset_from_date.value);
+	
+	var wrongFormatProducts = !document.create_form.existing_list.value
+		&& document.create_form.list_name.value
+		&& (!fileFormat.test(document.create_form.list_name.value) || !document.create_form.add_products.value);
+		//to define - checking of products format
+	
+	
 	var alertString = "";
 	
-	
-		
-	if (!emptyFields){
-		if (!document.create_form.path.value){
-			alertString += "Field: \"Name and path of configuration file\" is mandatory" + '\n';
+	if(!emptyFields){
+		if(!document.create_form.path.value){
+			alertString += "\"Name and path of configuration file\" field is mandatory." + '\n';
 		}
-		if (!document.create_form.bz_search.value && !document.create_form.subset_path.value){
-			alertString += "Field: \"Bugzilla search\" is mandatory" + '\n';
+		if(!document.create_form.bz_search.value && !document.create_form.subset_check.checked){
+			alertString += "\"Bugzilla search\" field is mandatory." + '\n';
 		}
-		if (!document.create_form.name_of_stats.value){
-			alertString += "Field: \"Name of statistics\" is mandatory" + '\n';
+		if(document.create_form.subset_check.checked && !document.create_form.subset_path.value){
+			alertString += "\"Subset of\" field is mandatory." + '\n';
 		}
-		if (!(document.create_form.existing_list.value || document.create_form.list_name.value)){
-			alertString += "Please specify \"List of products\" file or create new list of products" + '\n';
+		if(document.create_form.subset_check.checked && !document.create_form.subset_from_date.value){
+			alertString += "\"Retrieve history from date\" field is mandatory." + '\n';
 		}
-		if (!(document.getElementById('run_now').checked || document.getElementById('run_auto').checked)){
-			alertString += "Please \"Define run method\"" + '\n';
+		if(!document.create_form.name_of_stats.value){
+			alertString += "\"Name of statistics\" field is mandatory" + '\n';
+		}
+		if(!document.create_form.existing_list.value
+			&& !document.create_form.list_name.value){
+			alertString += "Please specify \"List of products\" file or create new list of products." + '\n';
+		}
+		if(!document.getElementById('run_now').checked
+			&& !document.getElementById('run_auto').checked){
+			alertString += "Please \"Define run method\"." + '\n';
 		}
 		alert (alertString);
 	}
-	else if(document.create_form.subset_path.value && !document.create_form.subset_from_date.value){
-		alert("Please define \"Retrieve history from date\" field.");
-		document.create_form.subset_from_date.focus();
+	else if(!wrongFormatMain){
+		if(!fileFormat.test(document.create_form.path.value)){
+			alertString += "\"Name and path of configuration file\" must have a format: file_name.conf" + '\n';
+		}
+		if(!nameFormat.test(document.create_form.name_of_stats.value)){
+			alertString += "\"Name of statistics\" field cannot contain white spaces." + '\n';
+		}
+		alert (alertString);
+	}
+	else if(wrongFormatSubset){
+		alertString += "\"Retrieve history from date\" field: date  format is wrong (YYYY-MM-DD)." + '\n';
+		alert (alertString);
+	}
+	else if(wrongFormatProducts){
+		if(!fileFormat.test(document.create_form.list_name.value)){
+			alertString += "\"Products list file name\" must have a format: file_name.conf" + '\n';
+		}
+		if(!document.create_form.add_products.value){
+			alertString += "\"Specify products\" field is mandatory" + '\n';
+		}
+		alert (alertString);
 	}
 	else{
 		document.create_form.submit();
