@@ -1,5 +1,18 @@
 <?php
 
+/*
+#===================================================================================
+# BAM Manager (Bugzilla Automated Metrics Manager): index.php
+#
+# Copyright 2011, Comarch SA
+# Maintainers: 	Krystian Jedrzejowski <krystian.jedrzejowski@comarch.com>,
+# 				Kamil Marek <kamil.marek@comarch.com>
+# Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+#
+# Date: Thu Jul 13 11:56:00 EET 2011
+#===================================================================================
+*/
+
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_common_parameters_file'])) {
 	$common_parameters_file_content = $_POST['common_parameters_file_content'];
 	system("sudo lib/libcontentaction.pl --start $login 'change_common_parameters_file'");
