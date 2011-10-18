@@ -30,9 +30,42 @@ www-data ALL=(ALL) NOPASSWD: /var/www/bugzilla_statistics/manager/lib/libcontent
 and log in using pre-defined admin account admin:admin
 5. Open Settings tab and configure 'BAM Manager settings' section
 
-========================
 
-MINI HOW TO:
-------------
+HOW TO USE IT:
+==============
+BAM Manager contains 5 or 7 tab (7 only when you are logged in as 'admin'):
 
-...
+1. Create new statistic
+In this tab you can create new statisics. Fill at least all nessessary fields.
+Move cursor over [?] to read some tips.
+It is possible to create also new list of products at the same time (press 'Create new list of products' link).
+It is also possible to create subset of existing statistics.
+Remember: Subset in BAM means subset of components. Bugzilla search is the same as in parent statistics.
+
+*Define run method:	 
+Run statistics now - create config files, add entry to cron and run statistics now! Results will be visible in few minutes.
+Wait for automatic run (time of automatic run defined in settings) - create config files, add entry to cron. Statistics will be run
+automatically the next day (as defined in cron)
+
+2. Edit existing statistics
+In this tab it is possible to remove or edit name of existing statistics.
+
+3. Lists of products
+In this tab it is possible to remove, edit existing or create new list of products.
+
+4. Common parameters
+In this tab it is possible to edit common parameters for all statistics.
+
+5. Refresh statistics
+In this tab it is possible to refresh all or selected statistics. Refresh means delete today's data and fetch actual data again.
+
+6. Settings
+This tab is visible only if you are logged as 'admin'.
+You can set/edit location of BAM scripts and edit crontab job.
+
+7. Users
+This tab is visible only if you are logged as 'admin'.
+Create/remove BAM Manager users.
+
+-
+To change password, tap 'Change password' link in the right up corner.
