@@ -34,8 +34,12 @@ if (isset($_GET['tab']) && $_GET['tab'] != '')
 <html>
 <head>
 	<title>BAM Manager</title>
-	<link rel="Stylesheet" type="text/css" href="style/style.css">	
+	<link rel="Stylesheet" type="text/css" href="style/style.css" />
+	<link href="style/jqueryFileTree.css" rel="stylesheet" type="text/css" media="screen" />
 	<script type="text/javascript" src="lib/scripts.js"></script>
+	<script src="lib/file_tree/jquery.js" type="text/javascript"></script>
+	<script src="lib/file_tree/jquery.easing.js" type="text/javascript"></script>
+	<script src="lib/file_tree/jqueryFileTree.js" type="text/javascript"></script>
 </head>
 <body>
 	<div id="content">

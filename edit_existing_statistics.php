@@ -1,4 +1,15 @@
+<script type="text/javascript">
+	$(document).ready( function() {
+				
+		$('#fileTree').fileTree({ root: '/home/btests-www/etc/bugzilla_statistics/', script: 'lib/file_tree/jqueryFileTree.php' }, function(file) { 
+			openFile(file);
+		});
+				
+	});
+</script>
+
 <?php
+
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name_of_stats'])) {
 	
@@ -222,7 +233,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['read_statistic_content'
 						<td style="width: 100px;">
 						<p align="right">
 						<input type="button" OnClick="window.location=\'index.php?tab=edit_existing_statistics\'" value="Dismiss changes">
-						<input type="button" name="save_statistic_field" value="Save changes" onClick="submitFields()" onChange="showSpinner()">
+						<input type="button" name="save_statistic_field" value="Save changes" onClick="existingSubmitFields()" onChange="showSpinner()">
 						</td>
 					</tr>
 				</table>
@@ -292,24 +303,20 @@ else {
 		echo '
 
 		<form name="form_existing_statisctics" action="index.php?tab=edit_existing_statistics" method="POST">
-		<fieldset id="interior">
-			<legend>Statistics directory: ' . $path_to_statistics_directory . '</legend>
+			<fieldset id="interior">
+				<legend>Statistics directory: ' . $path_to_statistics_directory . '</legend>
 		';
-			$file_list = glob($path_to_statistics_directory . '*.conf');
-			foreach ($file_list as $file) {
-				if ($file != $common_parameters_file) {
-					$file_name = clipPathToFileName($file, $path_to_statistics_directory);
-					echo '<input type="radio" name="existing_statistics" onclick="enableButton();" value="' . $file . '"> ' . $file_name . '<br>';
-				}
-			}
 		echo '
-		</fieldset>
-		<table align="right" style="overflow: auto; width: 100%">
+		
+				<div id="fileTree" class="tree"></div>
+				<input type="hidden" class="input_text"  name="existing_statistics" />
+			</fieldset>
+			<table align="right" style="overflow: auto; width: 100%">
 				<tr>
 					<td style="width: 100px;">
-					<p align="right">
-					<input disabled type="submit" name="remove_statistic" value="Remove statistic" onClick="showSpinner()"/>
-					<input disabled style="margin-top: 1px; margin-right: 0px;" type="submit" name="read_statistic_content" value="Edit selected list of products" onClick="showSpinner()"/>
+						<p align="right">
+						<input disabled type="submit" name="remove_statistic" value="Remove statistic" onClick="showSpinner()"/>
+						<input disabled style="margin-top: 1px; margin-right: 0px;" type="submit" name="read_statistic_content" value="Edit selected list of products" onClick="showSpinner()"/>
 					</td>
 				</tr>
 			</table>
@@ -319,43 +326,3 @@ else {
 	}
 }
 ?>
-
-<script type="text/javascript">
-
-function enableButton() {
-	var val = 0;
-	for ( i = 0; i < document.form_existing_statisctics.existing_statistics.length; i++ ) {
-		if( document.form_existing_statisctics.existing_statistics[i].checked == true ) {
-			document.form_existing_statisctics.read_statistic_content.disabled=false;
-			document.form_existing_statisctics.remove_statistic.disabled=false;
-			document.form_existing_statisctics.read_statistic_content.focus();
-		}
-	}
-}
-function submitFields() {
-	var invalid = " "; 
-
-	if (document.edit_statistics.name_of_stats_to_edit.value == document.edit_statistics.name_of_stats.value) {
-		alert("Nothing has been changed");
-	}
-	else if (!document.edit_statistics.name_of_stats.value){
-		alert("Please specify name of statistic");
-	}
-	else if (document.edit_statistics.name_of_stats.value.indexOf(invalid) > -1) {
-		alert("Name of statistic field cannot contains spaces");
-	}
-	else {
-		document.edit_statistics.submit();
-	}
-}
-function handleWantsList(wants_list){
-	if (wants_list){
-		document.getElementById('list_false').style.display = 'none';
-		document.getElementById('list_true').style.display = 'block';
-	}
-	else{
-		document.getElementById('list_false').style.display = 'block';
-		document.getElementById('list_true').style.display = 'none';
-	}
-}
-</script>

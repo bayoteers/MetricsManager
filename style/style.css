@@ -31,6 +31,11 @@ hr {
     width           : 100%;
 }
 
+.tree {
+	width			: 500px;
+	padding			: 15px;
+}
+
 table{
 	font            : normal 11px "Arial CE", "Helvetica CE", Arial, Helvetica, sans-serif;
 }
