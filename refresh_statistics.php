@@ -32,6 +32,7 @@
 		});
 
 function addSelectedToArray(file) {	
+	// check whether item is already selected
 	var idx = statistics_to_refresh.indexOf(file);
 	
 	if(idx != -1) {
@@ -52,32 +53,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_selected_statis
 	$login = $_SESSION['logged in'];
 	system("sudo lib/libcontentaction.pl --start $login Refresh_statistics");
 	$list_of_statistics_to_refresh = $_POST['statistics_to_refresh'];
-	$list_of_statistics_to_refresh = explode(",", $list_of_statistics_to_refresh);
-	$number_of_selected_statistics_to_refresh = count($list_of_statistics_to_refresh);
-	
-	if ($number_of_selected_statistics_to_refresh == 0) {
+	if ($list_of_statistics_to_refresh == "") {
 		$log_info = 'You apparently didn\'t choose any statistics to refresh.';
 		logToSyslog($log_info);
 		displayMessageFieldset('ERROR!', $log_info, '?tab=refresh_statistics');
 	}
-	elseif ($number_of_selected_statistics_to_refresh == 1) {
-		system("sudo lib/libcontentaction.pl --refresh $list_of_statistics_to_refresh");
-		exec("sudo lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $list_of_statistics_to_refresh", &$output, &$return_var);
-		if ($return_var == 9) {
-			$body .= '<p>Updating' . $list_of_statistics_to_refresh;
-			$body .= '<br>Success! Selected statistics has been updated<br>';
-			$path = searchString($common_parameters_file, "STATS_URL_BASE") . '?s=' . searchString($list_of_statistics_to_refresh, "STATISTICS") . '&p=all';
-			$body .= '<a href = "' . $path . '" target="_blank">' . searchString($list_of_statistics_to_refresh, "STATISTICS") . '</a></p>';
-		}
-		
-		else {
-			$success = false;
-			$body .= 'Updating' . $list_of_statistics_to_refresh;
-			$body .= '<br>ERROR occured while updating statistics.<br><br>';
-		}
-	}
 	
 	else {
+		$list_of_statistics_to_refresh = explode(",", $list_of_statistics_to_refresh);
+		$number_of_selected_statistics_to_refresh = count($list_of_statistics_to_refresh);
+		
 		$body = 'Status: <br>';
 		$success = true;
 		
@@ -188,16 +173,6 @@ else {
 	<fieldset id="interior">
 		<legend>Statistics directory: ' . $path_to_statistics_directory . '</legend>
 	';
-		/*
-		$file_list = glob($path_to_statistics_directory . '*.conf');
-		foreach ($file_list as $file) {
-			if ($file != $common_parameters_file) {
-				$file_name = clipPathToFileName($file, $path_to_statistics_directory);
-				echo '
-				<input type="checkbox" id="checkbox_refresh" name="existing_list[]" value="' . $file . '"> ' . $file_name . '<br>';
-			}
-		}
-		*/
 	echo '
 	<div id="fileTree" class="tree"></div>
 	<input type="" class="input_text" name="statistics_to_refresh"/>
