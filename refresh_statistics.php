@@ -23,13 +23,14 @@
 	var statistics_to_refresh = new Array();
 
 	$(document).ready( function() {				
-		$('#fileTree').fileTree({ 	
+		$('#refreshFileTree').fileTree({ 	
 			root: '<?php echo $path_to_statistics_directory; ?>', 
-			script: 'jqueryFileTree.php' }, 
+			script: 'lib/file_tree/jqueryFileTree.php' }, 
 			function(file) { 
 				addSelectedToArray(file);
 			});
 		});
+	
 
 function addSelectedToArray(file) {	
 	// check whether item is already selected
@@ -174,8 +175,8 @@ else {
 		<legend>Statistics directory: ' . $path_to_statistics_directory . '</legend>
 	';
 	echo '
-	<div id="fileTree" class="tree"></div>
-	<input type="" class="input_text" name="statistics_to_refresh"/>
+	<div id="refreshFileTree" class="tree"></div>
+	<input type="hidden" class="input_text" name="statistics_to_refresh"/>
 	</fieldset>
 	<table align="right" style="overflow: auto; width: 100%" id="submit_button_table">
 		<tr>
