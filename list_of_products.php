@@ -91,12 +91,19 @@ else {
 		<form name="form_existing_lists_of_products" action="index.php?tab=list_of_products" method="POST">
 		<fieldset id="interior">
 			<legend>Edit existing lists of products</legend>
+		
+		<div id="editProductTree" class="tree"></div>
+		<input type="hidden" class="input_text" name="existing_list"/>
+		
+		
 		';
+		/*
 			$file_list = glob($path_to_products_directory . '*.conf');
 			foreach ($file_list as $file) {
 				$file_name = clipPathToFileName($file, $path_to_products_directory);
 				echo '<input type="radio" name="existing_list" onclick="enableButton();" value="' . $file . '"> ' . $file_name . '<br>';
 			}
+		*/
 		echo '
 		</fieldset>
 		<table align="right" style="overflow: auto; width: 100%">
@@ -170,3 +177,17 @@ else {
 	}
 }
 ?>
+
+<script type="text/javascript">
+$(document).ready( function() {
+			
+	$('#editProductTree').fileTree({
+		root: '<?php echo $path_to_products_directory; ?>',
+		script: 'lib/file_tree/jqueryFileTree.php'
+	},
+	function(file) { 
+		chooseElement(file);
+	});	
+});
+
+</script>
