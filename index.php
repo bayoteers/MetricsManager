@@ -114,7 +114,7 @@ if (isset($_GET['tab']) && $_GET['tab'] != '')
 	<!-- Products -->	
 	<div id="showProductsTree" style="display: none;">
 		<fieldset id="interior">
-			<legend>Statistics directory: <?php echo $path_to_products_directory; ?></legend>
+			<legend>Products directory: <?php echo $path_to_products_directory; ?></legend>
 			<div id="productsFileTree" class="tree"></div>
 		</fieldset>
 		<p align="right">
@@ -125,7 +125,7 @@ if (isset($_GET['tab']) && $_GET['tab'] != '')
 	<!-- Subset -->	
 	<div id="showSubsetTree" style="display: none;">
 		<fieldset id="interior">
-			<legend>Statistics directory: <?php echo $path_to_statistics_directory; ?></legend>
+			<legend>Subsets directory: <?php echo $path_to_subsets_directory; ?></legend>
 			<div id="subsetFileTree" class="tree"></div>
 		</fieldset>
 		<p align="right">
