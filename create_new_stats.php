@@ -21,8 +21,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	$list_name = $_POST['list_name'];
 	$add_products = $_POST['add_products'];
 	//Common variables
-	$path = trim($_POST['path']);
-	$path_of_conf_file = $path_to_statistics_directory.$path;
+	$path_of_conf_file= trim($_POST['path']);
 	$file_check = file_exists($path_of_conf_file);
 	$common_params = $common_parameters_file;
 	$bz_search = trim($_POST['bz_search']);
@@ -36,7 +35,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	//Searching BZ search parameter in subset of file.
 	if($subset_path){
 		$subset_bz_search =  searchString($subset_path, "BUGZILLA_URL_COMMON_PARAMS");
-		echo $subset_bz_search;
 	}
 	//Searching name of statistic in subset of file.
 	if($subset_path){
@@ -255,14 +253,9 @@ else {
 								*Name of configuration file:
 							</td>
 							<td class="center_create">
-								<input class="input_text" type="text" name="path" value="" />
-							</td>
-							<td class="help">
-								<ul>?
-									<li>
-										Please specify name of configuration file ended with ".conf" <br>To avoid problems please name file similar as name of statistic e.g. harmattan_PR12_-_OS_-_adaptation.conf
-									</li>
-								</ul>
+								<input type="button" name="browse" value="Browse" onclick="showFileTree()" />
+								<span id="inactive_path" style="padding: 2px"></span>
+								<input class="input_text" type="hidden" name="path" />
 							</td>
 						</tr>
 						<tr>
@@ -286,7 +279,7 @@ else {
 								*Name of statistic:
 							</td>
 							<td class="center_create">
-								<input class="input_text"  type="text" name="name_of_stats"/>
+								<input class="input_text" type="text" name="name_of_stats"/>
 							</td>
 							<td class="help">
 								<ul>?
@@ -301,24 +294,9 @@ else {
 								*List of products:
 							</td>
 							<td class="center_create">
-	';
-	echo'
-									<select class="input_text" name="existing_list" onchange="disLink();">
-										<option name="existing_list"></option>';
-										$file_list = glob($path_to_products_directory . '*.conf');
-										foreach ($file_list as $file){
-											echo '<option name="existing_list" value="' . $file . '"> ' . $file . '</option>
-											';
-										}
-	echo'
-									</select> 
-							</td>
-							<td class="help">
-								<ul>?
-									<li>
-										Please select existing list of products or create new list by click on link "Create new list of products".<br> To check or modify content of existing lists go to tab "List of products"
-									</li>
-								</ul>
+								<input type="button" name="browse" value="Browse" id="browseProducts" onclick="showProductsTree()" />
+								<span id="inactive_products" style="padding: 2px"></span>
+								<input class="input_text" type="hidden" name="existing_list" />
 							</td>
 						</tr>
 					</table><br>
@@ -336,47 +314,18 @@ else {
 							<td style="width:200px" align="right">
 								Subset of:
 							</td>
-	';		
-	echo'
 							<td>
-								<select disabled class="input_text" name="subset_path">
-									<option name="subset_path" value=""></option>
-	';
-									$searchString = 'SUBSET_OF';
-									function searchTxt($file){
-										global $searchString;
-										if(strpos(file_get_contents($file), $searchString) == false){
-	echo'							
-									<option name="subset_path" value="' . $file . '">' . $file . '</option>
-	';
-										}
-									}
-									$dir = opendir($path_to_statistics_directory);
-									while($f = readdir($dir))
-									{
-									  if(!is_dir($path_to_statistics_directory.$f))
-									  {
-										 searchTxt($path_to_statistics_directory.$f);
-									   }
-									}
-									closedir($dir);
-	echo'
-								</select>
-								<input class="input_text"  type="hidden" name="subset_path_hidden" />
+								<input id="subsetBrowse" type="button" disabled name="browse" value="Browse" onclick="showSubsetTree()" />
+								<span id="inactive_subset" style="padding: 2px"></span>
+								<input class="input_text" type="hidden" name="subset_path">
+								<input class="input_text" type="hidden" name="subset_path_hidden" />
 							</td>
-							<td class="help">
-								<ul>?
-									<li>
-										Help text
-									</li>
-								</ul>
-							</td>
-						</tr>
+						</tr>	
 						<tr>
 							<td style="width:150px" align="right">
 								Retrieve history from date:
 							</td>
-							<td>
+							<td class="center_create">
 								<input class="input_text" disabled type="text" name="subset_from_date" placeholder="YYYY-MM-DD"/>
 								<input class="input_text"  type="hidden" name="subset_from_date_hidden" />
 							</td>
@@ -433,47 +382,40 @@ else {
 ?>
 
 <script type="text/javascript">
-	
-function enableField(){
-	if(document.create_form.subset_check.checked){
-		document.create_form.subset_path.disabled = false;
-		document.create_form.subset_path.value = document.create_form.subset_path_hidden.value;
-		document.create_form.subset_from_date.disabled = false;
-		document.create_form.subset_from_date.value = document.create_form.subset_from_date_hidden.value;
-		document.getElementById('run_now').checked = true;
-		document.getElementById('run_auto').disabled = true;
-		document.create_form.bz_search_hidden.value = document.create_form.bz_search.value;
-		document.create_form.bz_search.value = "";
-		document.create_form.bz_search.placeholder = "Bugzilla search parameter will be taken from subset configuration file";
-		document.create_form.bz_search.disabled = true;
-	}
-	else{
-		document.create_form.subset_path_hidden.value = document.create_form.subset_path.value;
-		document.create_form.subset_path.value = "";
-		document.create_form.subset_path.disabled = true;
-		document.create_form.subset_from_date_hidden.value = document.create_form.subset_from_date.value;
-		document.create_form.subset_from_date.value = "";
-		document.create_form.subset_from_date.disabled = true;
-		document.getElementById('run_now').checked = false;
-		document.getElementById('run_auto').disabled = false;
-		document.create_form.bz_search.value = document.create_form.bz_search_hidden.value;
-		document.create_form.bz_search.placeholder = "";
-		document.create_form.bz_search.disabled = false;
-	}
-}
-function uncheck(){
-	for (var i=0; i<document.create_form.classification.length; i++){
-		document.create_form.classification[i].checked = false;
-	}
-}
-function disLink(){
-	if(document.create_form.existing_list.value != ""){
-		document.getElementById("list_false").style.display="none";
-	}
-	else{
-		document.getElementById("list_false").style.display="inline";
-	}
-}
+	/*Shows whole statistic tree (statistics || subsets)*/
+	$(document).ready( function() {
+				
+		$('#fileTree').fileTree({
+			root: '<?php echo $path_to_statistics_directory; ?>',
+			script: 'lib/file_tree/jqueryCreateFileTree.php'
+		},
+		function(file) { 
+			createFile(file);
+		});				
+	});
+	/*Shows products tree*/
+	$(document).ready( function() {
+				
+		$('#productsFileTree').fileTree({
+			root: '<?php echo $path_to_products_directory; ?>',
+			script: 'lib/file_tree/jqueryProductsFileTree.php'
+		},
+		function(file) { 
+			chooseProducts(file);
+		});				
+	});
+	/*Shows subset tree*/
+	$(document).ready( function() {
+				
+		$('#subsetFileTree').fileTree({
+			root: '<?php echo $path_to_statistics_directory; ?>',
+			script: 'lib/file_tree/jquerySubsetsFileTree.php'
+		},
+		function(file) { 
+			chooseSubset(file);
+		});				
+	});
+
 function createCheckMandatoryFields(){
 	var nameFormat = /^\s*\S+\s*$/;
 	var fileFormat = /^\s*\S+\.conf\s*$/;
@@ -485,8 +427,7 @@ function createCheckMandatoryFields(){
 		&& document.create_form.path.value 
 		&& (document.getElementById('run_now').checked || document.getElementById('run_auto').checked);
 	
-	var wrongFormatMain = fileFormat.test(document.create_form.path.value)
-		&& nameFormat.test(document.create_form.name_of_stats.value);
+	var wrongFormatMain = nameFormat.test(document.create_form.name_of_stats.value);
 	
 	var wrongFormatSubset = document.create_form.subset_path.value
 		&& !dateFormat.test(document.create_form.subset_from_date.value);
@@ -526,9 +467,6 @@ function createCheckMandatoryFields(){
 		alert (alertString);
 	}
 	else if(!wrongFormatMain){
-		if(!fileFormat.test(document.create_form.path.value)){
-			alertString += "\"Name and path of configuration file\" must have a format: file_name.conf" + '\n';
-		}
 		if(!nameFormat.test(document.create_form.name_of_stats.value)){
 			alertString += "\"Name of statistics\" field cannot contain white spaces." + '\n';
 		}

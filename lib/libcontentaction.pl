@@ -204,37 +204,51 @@ elsif ($ARGV[0] eq "--move") {
 	else {
 		$TEMP_FILE_PATH=$ARGV[1];
 		$FILE_PATH=$ARGV[2];
-		if (! -e "$FILE_PATH") {
-			execute_command("touch $FILE_PATH");
-			execute_command("cat $TEMP_FILE_PATH >> $FILE_PATH");
-			execute_command("rm $TEMP_FILE_PATH");
+		if (-e trim(execute_command("dirname $FILE_PATH"))) {
+			if (! -e $FILE_PATH) {
+				execute_command("touch $FILE_PATH");
+				execute_command("cat $TEMP_FILE_PATH > $FILE_PATH");
+				execute_command("rm $TEMP_FILE_PATH");
+			}
+			else {
+				execute_command("echo -n > $FILE_PATH");
+				execute_command("cat $TEMP_FILE_PATH > $FILE_PATH");
+				execute_command("rm $TEMP_FILE_PATH");
+			}
 		}
-		
 		else {
-			execute_command("echo -n > $FILE_PATH");
-			execute_command("cat $TEMP_FILE_PATH >> $FILE_PATH");
+			info ("DIR_PATH: $DIR_PATH does not exist.");
+			execute_command("mkdir `dirname $FILE_PATH`");
+			execute_command("touch $FILE_PATH");
+			execute_command("cat $TEMP_FILE_PATH > $FILE_PATH");
 			execute_command("rm $TEMP_FILE_PATH");
 		}
 	}
 	break;
 }
+
 elsif ($ARGV[0] eq "--remove") {
 	info("METHOD: --remove");
 	if ($#ARGV != 1) {
 		print "METHOD: --remove ERROR: too few or too many argument(s)\n$help";
 		exit -1;
 	}
-	
 	else {
 		$CONFIG_FILE=$ARGV[1];
+		info("CONFIG_FILE: $ARGV[1]");
 		$STATISTICS = read_config_entry("STATISTICS");
 		$COMMON_PARAMS_FILE = read_config_entry("COMMON_PARAMS_FILE");
 		$STATISTICS_BASE_PATH = read_config_entry("STATISTICS_BASE_PATH");
 		$STATISTICS_BASE_PATH = trim($STATISTICS_BASE_PATH);
 		$DATA_PATH = "$STATISTICS_BASE_PATH/$STATISTICS";
+		$DIR_CONFIG_FILE=trim(execute_command("dirname $CONFIG_FILE"));
 		info("DATA_PATH:$DATA_PATH");
 		execute_command("rm -r $DATA_PATH/");
 		execute_command("rm $CONFIG_FILE");
+		$COUNT_FILES=execute_command("ls $DIR_CONFIG_FILE | wc -l");
+		if ($COUNT_FILES == 0) {
+			execute_command("rmdir $DIR_CONFIG_FILE/");
+		}
 		return $date;
 	}
 	break;
