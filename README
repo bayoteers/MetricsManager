@@ -17,18 +17,20 @@ Configure BAM Manager:
 ----------------------
 1. Download and extract archive to <your bam www location> directory i.e. /var/www/metrics/
 2. Set proper access rights:
+Set 755 owner: <your_user> for all files first
 tmp/ 775, owner: www-data
 lib/user-settings.php 666, owner: www-data
 users/ 733
 log/syslog 666
-rest of files: 755, owner: <your_user>
 3. Add one line to /etc/sudoers:
-$your_www_user ALL=(ALL) NOPASSWD: $path_to_libcontentaction.pl
+<your_www_user> ALL=(ALL) NOPASSWD: <path_to_libcontentaction.pl>
 i.e.
 www-data ALL=(ALL) NOPASSWD: /var/www/bugzilla_statistics/manager/lib/libcontentaction.pl
-4. Navigate to http://BAM_page/manager/ in your browser (firefox or google chrome are highly recommended)
+4. Navigate to http://<link_to_bam>/<bammanager_dirname>/ in your browser (firefox or google chrome are highly recommended)
 and log in using pre-defined admin account admin:admin
 5. Open Settings tab and configure 'BAM Manager settings' section
+- always enter full path to file/directory
+- add / at the end of dirpath i.e. /usr/local/etc/subsets/
 
 
 HOW TO USE IT:
