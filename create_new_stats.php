@@ -408,7 +408,7 @@ else {
 	$(document).ready( function() {
 				
 		$('#subsetFileTree').fileTree({
-			root: '<?php echo $path_to_statistics_directory; ?>',
+			root: '<?php echo $path_to_subsets_directory; ?>',
 			script: 'lib/file_tree/jquerySubsetsFileTree.php'
 		},
 		function(file) { 

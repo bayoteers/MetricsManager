@@ -1,5 +1,4 @@
 <?php
-
 /*
 #===================================================================================
 # BAM Manager (Bugzilla Automated Metrics Manager): index.php
@@ -18,38 +17,6 @@
 # 1. Remove present-day raw_data files for selected statistics (one-by-one)
 # 2. Fetch data for selected statistics (one-by-one)
 */
-?>
-<script type="text/javascript">
-	var statistics_to_refresh = new Array();
-
-	$(document).ready( function() {				
-		$('#refreshFileTree').fileTree({ 	
-			root: '<?php echo $path_to_statistics_directory; ?>', 
-			script: 'lib/file_tree/jqueryFileTree.php' }, 
-			function(file) { 
-				addSelectedToArray(file);
-			});
-		});
-	
-
-function addSelectedToArray(file) {	
-	// check whether item is already selected
-	var idx = statistics_to_refresh.indexOf(file);
-	
-	if(idx != -1) {
-		document.getElementById(file).style.background = 'none';
-		statistics_to_refresh.splice(idx, 1);
-	}
-	else {
-		document.getElementById(file).style.background = '#68b3e3';
-		statistics_to_refresh.push(file);
-	}
-	
-	document.refresh_statistics.statistics_to_refresh.value = statistics_to_refresh;
-}
-</script>
-<?php
-
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['refresh_selected_statistics'])) {
 	$login = $_SESSION['logged in'];
 	system("sudo lib/libcontentaction.pl --start $login Refresh_statistics");
@@ -192,3 +159,33 @@ else {
 	';
 }
 ?>
+<script type="text/javascript">
+	var statistics_to_refresh = new Array();
+
+	$(document).ready( function() {				
+		$('#refreshFileTree').fileTree({ 	
+			root: '<?php echo $path_to_statistics_directory; ?>', 
+			script: 'lib/file_tree/jqueryFileTree.php',
+			multiFolder: 'true'
+		},
+		function(file) { 
+			addSelectedToArray(file);
+		});
+	});
+
+function addSelectedToArray(file) {	
+	// check whether item is already selected
+	var idx = statistics_to_refresh.indexOf(file);
+	
+	if(idx != -1) {
+		document.getElementById(file).style.background = 'none';
+		statistics_to_refresh.splice(idx, 1);
+	}
+	else {
+		document.getElementById(file).style.background = '#68b3e3';
+		statistics_to_refresh.push(file);
+	}
+	
+	document.refresh_statistics.statistics_to_refresh.value = statistics_to_refresh;
+}
+</script>
