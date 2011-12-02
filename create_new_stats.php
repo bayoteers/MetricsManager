@@ -150,8 +150,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 				//Lunch subset of
 				$path = searchString($common_parameters_file, "STATS_URL_BASE");
 				$dir_bin = dirname($fetch_statistics_from_bugzilla_file);
-				$create_subset_file = $dir_bin . "create_subset.pl";
-				$command_subset = "/lib/libcontentaction.pl --subset $create_subset_file $path_of_conf_file $subset_from_date $statistics_user";
+				$create_subset_file = $dir_bin . "/create_subset.pl";
+				$create_subset_file = trim($create_subset_file);
+				$command_subset = "lib/libcontentaction.pl --subset $create_subset_file $path_of_conf_file $subset_from_date $statistics_user";
 				exec("sudo $command_subset", &$output, &$return_var);
 				/* 
 				// check whether fetching was successful
@@ -238,7 +239,7 @@ else {
 			<fieldset id="interior">
 			<legend>Create new statistics</legend>
 				<form name="create_form" action="index.php?tab=create_new_stats" method="POST"><br>
-					<table class="create" border="0"><br>
+					<table class="create" border="0"><br>
 						<tr>
 							<td class="left">
 								*Name of configuration file:
