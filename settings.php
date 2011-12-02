@@ -20,6 +20,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_settings'])) {
 	$fetch_statistics_file = $_POST['fetch_statistics_file'];
 	$fetch_statistics_from_bugzilla_file = $_POST['fetch_statistics_from_bugzilla_file'];
 	$path_to_products_directory = $_POST['path_to_products_directory'];
+	$path_to_subsets_directory = $_POST['path_to_subsets_directory'];
 	$path_to_statistics_directory = $_POST['path_to_statistics_directory'];
 		
 	$common_parameters_file_check = file_exists($common_parameters_file);
@@ -35,6 +36,7 @@ $crontab_file="' . $crontab_file . '";
 $fetch_statistics_file="' . $fetch_statistics_file . '";
 $fetch_statistics_from_bugzilla_file="' . $fetch_statistics_from_bugzilla_file . '";
 $path_to_products_directory="' . $path_to_products_directory . '";
+$path_to_subsets_directory="' . $path_to_subsets_directory . '";
 $path_to_statistics_directory="' . $path_to_statistics_directory . '";
 ?>
 		';			
@@ -116,6 +118,15 @@ else {
 				<td class="help">
 					<ul>?
 						<li>Full path to directory where you want to store statistics configuration files</li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td class="left"><p>Path to \'subsets\' directory:</p></td>
+				<td class="center_create"><input class="input_text" disabled type="text" name="path_to_subsets_directory" value=' . $path_to_subsets_directory . '></td>
+				<td class="help">
+					<ul>?
+						<li>Full path to directory where you want to store lists of subsets files (should be different than statistics directory)</li>
 					</ul>
 				</td>
 			</tr>
