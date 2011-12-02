@@ -12,10 +12,14 @@
 #===================================================================================
 
 use POSIX qw(strftime);
+use Cwd 'abs_path';
 
-$LOG_FILE = "/var/www/bugzilla_statistics/manager/log/syslog";
+my $LOG_FILE = abs_path();
+$LOG_FILE =~ s/lib//g;
+$LOG_FILE = "$LOG_FILE/log/syslog";
+die "Log file does not exists: $LOG_FILE - exit." unless (-e $LOG_FILE);
+
 open(LOG, ">>", $LOG_FILE);
-
 if ($ARGV[0] eq "--start") {
 	if ($#ARGV != 2) {
 		print "METHOD: --start ERROR: too few or too many argument(s)\n$help";
