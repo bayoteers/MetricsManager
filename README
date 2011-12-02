@@ -21,6 +21,7 @@ Set 755 owner: <your_user> for all files first
 tmp/ 775, owner: www-data
 lib/user-settings.php 666, owner: www-data
 users/ 733
+users/admin.cl50cp1eoq9zj3scotij1a84 644, owner: www-data
 log/syslog 666
 3. Add one line to /etc/sudoers:
 <your_www_user> ALL=(ALL) NOPASSWD: <path_to_libcontentaction.pl>
