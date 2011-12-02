@@ -103,6 +103,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 			//Decide when statistic runs.
 			if($lunch_method == 'run_now' && !$subset_path){
 				//Lunch statistic now
+				$path = searchString($common_parameters_file, "STATS_URL_BASE");
 				$command = "lib/libcontentaction.pl --fetch $statistics_user $fetch_statistics_from_bugzilla_file $path_of_conf_file";
 				exec("sudo $command", &$output, &$return_var);
 				/* 
@@ -120,8 +121,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 						<legend>
 							Statistic has been successfully created
 						</legend> 
-							Statistic has been created: <a href="http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'" target="_blank">
-								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'.</a>
+							Statistic has been created: <a href="'. $path ."?s=".$name_of_stats .'" target="_blank">
+								'. $path ."?s=". $name_of_stats .'</a>
 							&nbspCheck <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
 							<br><br>
 							<a href="?tab=create_new_stats">Back to Create Form</a>
@@ -147,7 +148,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 			}
 			elseif($lunch_method == 'run_now' && $subset_path){
 				//Lunch subset of
-				$command_subset = "/var/www/bugzilla_statistics/manager/lib/libcontentaction.pl --subset /home/btests-www/bin/create_subset.pl $path_of_conf_file $subset_from_date $statistics_user";
+				$path = searchString($common_parameters_file, "STATS_URL_BASE");
+				$dir_bin = dirname($fetch_statistics_from_bugzilla_file);
+				$create_subset_file = $dir_bin . "create_subset.pl";
+				$command_subset = "/lib/libcontentaction.pl --subset $create_subset_file $path_of_conf_file $subset_from_date $statistics_user";
 				exec("sudo $command_subset", &$output, &$return_var);
 				/* 
 				// check whether fetching was successful
@@ -164,8 +168,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 								Statistic has been successfully created
 							</legend>
 							Statistic has been created: 
-							<a href="http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'" target="_blank">
-								http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'.
+							<a href="'. $path ."?s=".$name_of_stats .'" target="_blank">
+								"'. $path ."?s=".$name_of_stats .'"
 							</a>
 							&nbspCheck <a href="#" onclick="handleWantsList(false)">syslog</a> for details.
 							<br><br>
@@ -185,14 +189,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['path'])) {
 	';
 			}
 			elseif($lunch_method == 'run_auto'){
+			$path = searchString($common_parameters_file, "STATS_URL_BASE");
 	echo'
 					<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
 						<legend>
 							Files have been successfully created
 						</legend>
 						Files have been created. Wait for next automatic run to see metrics under
-						<a href="http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'" target="_blank">
-							http://milosz-pc.research.nokia.com/bugzilla_statistics/?s='.$name_of_stats.'</a>
+						<a href="'. $path ."?s=".$name_of_stats .'" target="_blank">
+							"'. $path ."?s=".$name_of_stats .'"</a>
 						<br><br>
 						<a href="?tab=create_new_stats">
 								Back to Create Form
@@ -233,20 +238,6 @@ else {
 			<fieldset id="interior">
 			<legend>Create new statistics</legend>
 				<form name="create_form" action="index.php?tab=create_new_stats" method="POST"><br>
-		<!--			
-					<table width="100%">
-						<tr>
-							<td class="left">
-								Common Parameters File:
-							</td>
-							<td>
-								<input type="radio" checked name="common_params" value="/usr/local/etc/bugzilla_statistics/common_parameters.conf" onChange="javascript:document.create_form.custom_params.disabled=true"> Default (/usr/local/etc/bugzilla_statistics/common_parameters.conf)<br>
-								<input type="radio" name="common_params" value="" onChange="javascript:document.create_form.custom_params.disabled=false"> Custom <input disabled size="50" type="text" name="custom_params" value="" placeholder="DO NOT USE - under construction"/><br>
-							</td>
-						</tr>
-					</table><br>
-				<hr>
-		-->
 					<table class="create" border="0"><br>
 						<tr>
 							<td class="left">

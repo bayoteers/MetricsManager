@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['remove_statistic']) ){
 	
 	echo '	<fieldset id="interior" style="width:700px; margin: auto; padding: 20px;">
 				<legend>Statistic has been removed</legend>
-					Statistic "' . $statistic_to_remove . '" has been removed. Check <a href="#" onclick="handleWantsList(false)">syslog</a> for details.<br><br><a href="?tab=edit_existing_statistics">Back to \'Edit existing statistics\' tab. </a>
+					Statistic "' . $statistic_to_remove . '" has been removed. Check <a href="#" onclick="handleWantsList(false)">syslog</a> for details.<br><br><a href="?tab=remove_statistics">Back to \'Remove statistics\' tab. </a>
 			</fieldset>
 		';
 	echo '
@@ -63,7 +63,7 @@ else {
 	if ($_GET['statistic'] == '') {
 		echo '
 
-		<form name="form_existing_statisctics" action="index.php?tab=edit_existing_statistics" method="POST">
+		<form name="form_existing_statisctics" action="index.php?tab=remove_statistics" method="POST">
 			<fieldset id="interior">
 				<legend>Statistics directory: ' . $path_to_statistics_directory . '</legend>
 		';
