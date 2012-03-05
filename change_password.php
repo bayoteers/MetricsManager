@@ -28,9 +28,9 @@ echo '
 ';
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
 	$login = $_SESSION['logged in'];
-	$password_old = $_POST['password_old'];
-	$password_new = $_POST['password_new'];
-	$password_confirm = $_POST['password_confirm'];
+	$password_old = sha1($_POST['password_old']);
+	$password_new = sha1($_POST['password_new']);
+	$password_confirm = sha1($_POST['password_confirm']);
 	
 	$path_to_file = ("users/$login.cl50cp1eoq9zj3scotij1a84");
 	

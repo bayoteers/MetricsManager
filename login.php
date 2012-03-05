@@ -54,7 +54,7 @@ else if (!isSet($_POST["password"]) || !isSet($_POST["login"])) {
 	include('form.php');
 }
 else {
-	$val = checkPass($_POST["login"], $_POST["password"]);
+	$val = checkPass($_POST["login"], sha1($_POST["password"]));
 	
 	if($val == 0) {
 		$_SESSION['logged in'] = $_POST['login'];

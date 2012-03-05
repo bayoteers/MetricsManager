@@ -39,8 +39,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['remove_selected_user'])
 
 else if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_new_user'])) {
 	$login = $_POST['login'];
-	$password = $_POST['password'];
-	$password2 = $_POST['password_confirm'];
+	$password = sha1($_POST['password']);
+	$password2 = sha1($_POST['password_confirm']);
 	$file = ("users/$login.cl50cp1eoq9zj3scotij1a84");
 	
 	system("sudo lib/libcontentaction.pl --start $login 'Users: create_new_user'");
